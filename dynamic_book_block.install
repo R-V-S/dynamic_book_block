@@ -1,0 +1,25 @@
+<?php
+/**
+ * @file dynamic_book_block.install
+ * Contains install and update functions for Dynamic Menu Block.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function dynamic_book_block_install() {
+  //drupal_install_schema('dynamic_book_block');
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function dynamic_book_block_uninstall() {
+  //drupal_uninstall_schema('dynamic_book_block');
+}
+
+/**
+ * Implements hook_schema().
+ */
+function dynamic_book_block_schema() {  
+}

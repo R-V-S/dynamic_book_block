@@ -1,0 +1,61 @@
+<?php
+/**
+ * @file dynamic_book_block.module
+ *
+ */
+
+/**
+ * Implements hook_block_info().
+ *
+ * Registers the block.
+*/
+function dynamic_book_block_block_info() {
+  $blocks = array();
+  $blocks['dynamic_book_block'] = array(
+    'info' => t('Dynamic Book Block'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ *
+ * Step by step:
+ *  1. Get the node object from the internal URL ($_GET['q'])
+ *  2. If the node is a book, get the book data as a menu tree
+ *  3. Extrapolate the title from the top level of the tree
+ *  4. Build the block from the book's menu tree data.
+ */
+function dynamic_book_block_block_view($delta = '') {
+  if ( $nid = str_replace('node/', '', $_GET['q']) ) {
+    $node = node_load($nid);
+    if ($node->book) {
+      $book_tree = menu_tree_all_data($node->book['menu_name'], $node->book);
+
+      $bid = $node->book['bid'];
+      $books = book_get_books();
+      $this_book = $books[$bid];
+      $book_title = $this_book['title'];
+      $book_href = $this_book['href'];
+      $book_link = l($book_title, $book_href);
+
+      if ($book_tree && $book_link) {
+        // Check to see if the book name is also the first page:
+        reset($book_tree);
+        $first_menu_item_key = key ( $book_tree );
+        $first_menu_link_title = $book_tree[$first_menu_item_key]['link']['link_title'];
+        // If so, don't render the parent link:
+        if ($first_menu_link_title === $book_title) {
+          $book_tree = $book_tree[$first_menu_item_key]['below'];
+        }
+
+        $block = array();
+        $block['content'] = menu_tree_output($book_tree);
+        $block['subject'] = $book_link;
+        return $block;
+      }
+    }
+  }
+}

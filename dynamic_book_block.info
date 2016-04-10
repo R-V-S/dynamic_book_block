@@ -1,0 +1,6 @@
+name = "Dynamic Book Block"
+description = "Generates a block that loads the navigation of the current book on the page without additional books"
+core = 7.x
+project = "Dynamic Book Block"
+files[] = "dynamic_book_block.module"
+dependencies[] = book
